@@ -19,6 +19,6 @@ public class ExternalMergeSort implements ExternalSortStrategy {
     }
 
     public void merge(Block[] blocks, Reader reader, Writer writer) {
-
+        // TODO: merge the blocks
     }
 }

@@ -1,7 +1,7 @@
 package com.digit.mergesort;
 
 public class ExternalSortStrategyFactory {
-    public static ExternalSortStrategy get(ExternalSortType type) {
+    public static ExternalSortStrategy create(ExternalSortType type) {
         switch(type) {
             case MERGE_SORT:
                 return new ExternalMergeSort();

@@ -1,15 +1,15 @@
 package com.digit.io;
 
-import com.digit.util.ByteArithmetic;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * A chunk is a section of a block.
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Getter
 public class Chunk {
-    public static final long BYTES_PER_CHUNK = ByteArithmetic.gbToByte(1.0);
     /**
      * Where should we start in the file?
      */

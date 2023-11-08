@@ -1,36 +1,40 @@
 package com.digit.io;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 
 public class FileBlocks {
+
     /**
-     * This means we need to have 8 chunks in memory at a time => 8 GB at a time
-     * TODO: This won't actually work. We really need to base it off of the file size
+     * For every file in the folder, create a block. Each block should have chunks for the bytes per chunk.
+     * @param dataFolder The folder with individual files per block
+     * @return An array of all blocks
      */
-    public static final int CHUNKS_PER_BLOCK = 8;
+    public static Block[] create(File dataFolder) {
 
-    public static Block[] create(File file) {
-        List<Block> blocks = new ArrayList<>();
-        long offset = 0;
-        long fileSize = file.length();
+        try (Stream<Path> paths = Files.walk(dataFolder.toPath())) {
+            return paths.map(path -> {
+                Block.Builder builder = Block.builder();
+                builder.filePath(path);
 
-        // Add blocks with chunks until the entire file is full
-        while (offset < fileSize) {
-            // Add a new chunk to the block
-            int chunk = 0;
-            Block.Builder builder = Block.builder();
+                long offset = 0;
+                // Get the size of the data file
+                long fileSize = path.toFile().length();
 
-            while (chunk < CHUNKS_PER_BLOCK) {
-                builder.add(offset);
-                offset = offset + Chunk.BYTES_PER_CHUNK;
-                chunk++;
-            }
+                // Split the file into chunks
+                while (offset < fileSize) {
+                    builder.addChunk(offset);
+                    offset += BlockMath.BYTES_PER_CHUNK;
+                }
 
-            blocks.add(builder.build());
+                return builder.build();
+            }).toArray(Block[]::new);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        return blocks.toArray(new Block[0]);
     }
 }
