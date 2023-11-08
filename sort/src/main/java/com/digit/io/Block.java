@@ -1,12 +1,12 @@
 package com.digit.io;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A block is a section of a file. It is made up of chunks. If we can fit M chunks into memory, a block holds M-1
@@ -14,9 +14,8 @@ import java.util.*;
  *
  * This assumes each block is a separate file
  */
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class Block {
+public class Block implements Iterator<Chunk> {
     /**
      * The file that holds the data
      */
@@ -25,8 +24,26 @@ public class Block {
 
     private final Chunk[] chunks;
 
+    private int index = 0;
+
+    private Block(Path filePath, Chunk[] chunks) {
+        this.filePath = filePath;
+        this.chunks = chunks;
+    }
+
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index < chunks.length;
+    }
+
+    @Override
+    public Chunk next() {
+        index++;
+        return chunks[index - 1];
     }
 
     static class Builder {

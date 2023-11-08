@@ -19,6 +19,8 @@ public class ExternalMergeSort implements ExternalSortStrategy {
     }
 
     public void merge(Block[] blocks, Reader reader, Writer writer) {
-        // TODO: merge the blocks
+        // For every block, read in the chunk
+
+        // Find the smallest of those values, write that value out, grab the next value
     }
 }

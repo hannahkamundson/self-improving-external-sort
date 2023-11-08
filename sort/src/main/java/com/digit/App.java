@@ -14,7 +14,7 @@ public class App {
 
         Subparsers subparsers = parser.addSubparsers();
         MergeSortCommand.configureParser(subparsers.addParser(CommandType.MERGE_SORT.toString()));
-        SplitCommand.configureParser(subparsers.addParser(CommandType.SPLIT.toString()));
+        GenerateCommand.configureParser(subparsers.addParser(CommandType.GENERATE.toString()));
 
         Namespace namespace;
 

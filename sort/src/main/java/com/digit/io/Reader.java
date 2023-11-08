@@ -17,6 +17,5 @@ public class Reader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
