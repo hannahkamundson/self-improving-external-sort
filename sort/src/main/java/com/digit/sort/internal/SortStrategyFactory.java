@@ -1,7 +1,7 @@
-package com.digit.sort;
+package com.digit.sort.internal;
 
 public class SortStrategyFactory {
-    public static SortStrategy create(SortStrategyType type) {
+    public static InternalSortStrategy create(SortStrategyType type) {
         switch(type) {
             case GENERIC:
                 return new GenericSort();

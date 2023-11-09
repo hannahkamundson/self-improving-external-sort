@@ -1,4 +1,4 @@
-package com.digit.mergesort;
+package com.digit.sort.external;
 
 public enum ExternalSortType {
     MERGE_SORT

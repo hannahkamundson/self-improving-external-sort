@@ -17,12 +17,12 @@ public class ReaderTest {
 
     @Test
     void testRead_happyPath_firstElement() {
-        assertArrayEquals(new int[]{4, 3}, Reader.read(testPath, 0, 2));
+        assertArrayEquals(new int[]{4, 3}, Reader.read(testPath, 0, 1));
     }
 
     @Test
-    void testRead_happyPath_middle() {
-        assertArrayEquals(new int[]{3, 2}, Reader.read(testPath, 1, 2));
+    void testRead_happyPath_middleSame() {
+        assertArrayEquals(new int[]{ 3 }, Reader.read(testPath, 1, 1));
     }
 
     @Test

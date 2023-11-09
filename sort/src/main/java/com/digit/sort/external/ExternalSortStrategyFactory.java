@@ -1,4 +1,4 @@
-package com.digit.mergesort;
+package com.digit.sort.external;
 
 public class ExternalSortStrategyFactory {
     public static ExternalSortStrategy create(ExternalSortType type) {

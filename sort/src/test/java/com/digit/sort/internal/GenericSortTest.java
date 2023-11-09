@@ -1,5 +1,6 @@
-package com.digit.sort;
+package com.digit.sort.internal;
 
+import com.digit.sort.internal.GenericSort;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

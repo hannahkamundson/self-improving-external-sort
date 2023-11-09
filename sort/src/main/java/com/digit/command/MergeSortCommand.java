@@ -3,12 +3,12 @@ package com.digit.command;
 import com.digit.io.Block;
 import com.digit.io.BlockMath;
 import com.digit.io.FileBlocks;
-import com.digit.mergesort.ExternalSortStrategy;
-import com.digit.mergesort.ExternalSortStrategyFactory;
-import com.digit.mergesort.ExternalSortType;
-import com.digit.sort.SortStrategy;
-import com.digit.sort.SortStrategyFactory;
-import com.digit.sort.SortStrategyType;
+import com.digit.sort.external.ExternalSortStrategy;
+import com.digit.sort.external.ExternalSortStrategyFactory;
+import com.digit.sort.external.ExternalSortType;
+import com.digit.sort.internal.InternalSortStrategy;
+import com.digit.sort.internal.SortStrategyFactory;
+import com.digit.sort.internal.SortStrategyType;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
@@ -53,10 +53,10 @@ public class MergeSortCommand implements Command {
 
         // Get the reader, writer, external sort, and internal sort
         ExternalSortStrategy externalSortStrategy = ExternalSortStrategyFactory.create(namespace.get("external_sort"));
-        SortStrategy sortStrategy = SortStrategyFactory.create(namespace.get("internal_sort"));
+        InternalSortStrategy internalSortStrategy = SortStrategyFactory.create(namespace.get("internal_sort"));
 
         // Apply the merge sort
-        externalSortStrategy.sort(blocks, sortStrategy);
+        externalSortStrategy.sort(blocks, internalSortStrategy);
         externalSortStrategy.merge(blocks, outputFile);
     }
 }

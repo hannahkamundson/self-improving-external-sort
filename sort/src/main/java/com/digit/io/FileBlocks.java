@@ -23,18 +23,24 @@ public class FileBlocks {
 
                         long offset = 0;
                         // Get the size of the data file
-                        long fileSize = 0;
+                        long lastIndexInFile = 0;
                         try {
-                            fileSize = Files.lines(path).count();
+                            lastIndexInFile = Files.lines(path).count() - 1;
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
 
-                        // Split the file into chunks
-                        while (offset <= fileSize) {
-                            builder.addChunk(offset);
+                        builder.addChunk(0);
+
+                        // Split the file into
+                        // It is okay if we end up doing lines in file twice because that just means we needed to
+                        // read the final line
+                        while (offset + linesPerChunk < lastIndexInFile) {
                             offset += linesPerChunk;
+                            builder.addChunk(offset);
                         }
+
+                        builder.addChunk(lastIndexInFile);
 
                         return builder.build();
                     }).toArray(Block[]::new);

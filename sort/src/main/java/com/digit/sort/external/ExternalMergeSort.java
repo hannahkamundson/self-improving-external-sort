@@ -1,9 +1,9 @@
-package com.digit.mergesort;
+package com.digit.sort.external;
 
 import com.digit.io.Block;
 import com.digit.io.BlockComparator;
 import com.digit.io.Writer;
-import com.digit.sort.SortStrategy;
+import com.digit.sort.internal.InternalSortStrategy;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,13 +13,13 @@ import java.util.PriorityQueue;
 public class ExternalMergeSort implements ExternalSortStrategy {
 
     @Override
-    public void sort(Block[] blocks, SortStrategy sortStrategy) {
+    public void sort(Block[] blocks, InternalSortStrategy internalSortStrategy) {
         for (Block block: blocks) {
             // Read all data into memory
             block.readAll();
 
             // Sort the data
-            block.sort(sortStrategy);
+            block.sort(internalSortStrategy);
 
             // Write the data to disk
             block.write();
@@ -44,11 +44,9 @@ public class ExternalMergeSort implements ExternalSortStrategy {
         PriorityQueue<Block> queue = new PriorityQueue<>(blocks.length, new BlockComparator());
 
         // For every block, read in the first chunk and add it to the min heap
-        for (int i = 0; i < blocks.length; i++) {
-            Block block = blocks[i];
+        for (Block block : blocks) {
             block.loadNextChunk();
             queue.add(block);
-            blocks[i] = null;
         }
 
         // Get the block with the smallest value

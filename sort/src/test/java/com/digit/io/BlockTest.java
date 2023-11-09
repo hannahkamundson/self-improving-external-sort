@@ -1,9 +1,12 @@
 package com.digit.io;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.nio.file.Path;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BlockTest {
@@ -91,9 +94,18 @@ public class BlockTest {
         assertEquals(0, block.getCacheIndex());
     }
 
+    @Test
+    void testWrite(@TempDir Path tempDirectory) {
+        Block block = createBlock();
+        Path actualOutput = tempDirectory.resolve("actual.txt");
+        block.loadNextChunk();
+        block.write(actualOutput);
+        assertThat(actualOutput)
+                .hasSameTextualContentAs(new File("src/test/resources/com/digit/io/block/expected.txt").toPath());
+    }
+
     private static Block createBlock() {
         File file = new File("src/test/resources/com/digit/io/block/block.txt");
-
         return Block.builder()
                 .filePath(file.toPath())
                 .addChunk(0)

@@ -1,6 +1,6 @@
 package com.digit.io;
 
-import com.digit.sort.SortStrategy;
+import com.digit.sort.internal.InternalSortStrategy;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -44,17 +44,22 @@ public class Block {
 
     /**
      * Sort the data according to the strategy
-     * @param sortStrategy How should we sort data?
+     * @param internalSortStrategy How should we sort data?
      */
-    public void sort(SortStrategy sortStrategy) {
-        sortStrategy.sort(cache);
+    public void sort(InternalSortStrategy internalSortStrategy) {
+        internalSortStrategy.sort(cache);
     }
 
     /**
      * Write all data to the original file
      */
+    // Visible for testing
+    void write(Path path) {
+        Writer.writeAll(cache, path);
+    }
+
     public void write() {
-        Writer.writeAll(cache, filePath);
+        write(filePath);
     }
 
     /**
@@ -81,7 +86,7 @@ public class Block {
         }
 
         // Read the data into cache
-        cache = Reader.read(filePath, chunks.minLine(), chunks.numLines());
+        cache = Reader.read(filePath, chunks.minLine(), chunks.maxLine());
         cacheIndex = 0;
         chunks.increment();
     }
@@ -113,7 +118,7 @@ public class Block {
         return new Builder();
     }
 
-    static class Builder {
+    public static class Builder {
         private final List<Long> chunksToBe = new ArrayList<>();
         private Path filePath = null;
 

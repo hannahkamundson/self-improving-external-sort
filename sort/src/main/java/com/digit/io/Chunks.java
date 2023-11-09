@@ -34,12 +34,14 @@ public class Chunks {
     /**
      * How many lines should we read? (including the original line)
      */
-    public long numLines() {
-        if (!hasNext()) {
-            throw new IndexOutOfBoundsException();
+    public long maxLine() {
+        // If it is the last element, just include the final element
+        if ((chunkIndex + 2) == offsets.length) {
+            return offsets[chunkIndex + 1];
         }
 
-        return offsets[chunkIndex + 1] - offsets[chunkIndex] ;
+        // Otherwise, only go up to the last value
+        return offsets[chunkIndex + 1] - 1;
     }
 
     public void increment() {

@@ -16,11 +16,11 @@ public class Reader {
         return Reader.read(filePath, -1, -1);
     }
 
-    public static int[] read(Path filePath, long beginning, long length) {
+    public static int[] read(Path filePath, long beginning, long end) {
         try(Stream<String> lines = Files.lines(filePath)) {
             Stream<String> specificLines;
-            if (beginning >= 0 && length >= 0) {
-                specificLines = lines.skip(beginning).limit(length);
+            if (beginning >= 0 && end >= beginning) {
+                specificLines = lines.skip(beginning).limit(end - beginning + 1);
             } else {
                 specificLines = lines;
             }

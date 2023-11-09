@@ -8,7 +8,7 @@ public class ChunksTest {
     void testMinMax_HappyPath_firstElement() {
         Chunks chunk = makeChunk();
         assertEquals(0, chunk.minLine());
-        assertEquals(4, chunk.numLines());
+        assertEquals(3, chunk.maxLine());
     }
 
     @Test
@@ -16,7 +16,7 @@ public class ChunksTest {
         Chunks chunk = makeChunk();
         chunk.increment();
         assertEquals(4, chunk.minLine());
-        assertEquals(1, chunk.numLines());
+        assertEquals(4, chunk.maxLine());
     }
 
     private static Chunks makeChunk() {
