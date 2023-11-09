@@ -7,8 +7,8 @@ import com.digit.sort.external.ExternalSortStrategy;
 import com.digit.sort.external.ExternalSortStrategyFactory;
 import com.digit.sort.external.ExternalSortType;
 import com.digit.sort.internal.InternalSortStrategy;
-import com.digit.sort.internal.SortStrategyFactory;
-import com.digit.sort.internal.SortStrategyType;
+import com.digit.sort.internal.InternalSortStrategyFactory;
+import com.digit.sort.internal.InternalSortType;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
@@ -32,7 +32,7 @@ public class MergeSortCommand implements Command {
                 .help("The external sort strategy you want to use")
                 .required(true);
         parser.addArgument("--internal-sort", "-is")
-                .type(SortStrategyType.class)
+                .type(InternalSortType.class)
                 .help("The internal sort strategy you want to use")
                 .required(true);
     }
@@ -53,7 +53,7 @@ public class MergeSortCommand implements Command {
 
         // Get the reader, writer, external sort, and internal sort
         ExternalSortStrategy externalSortStrategy = ExternalSortStrategyFactory.create(namespace.get("external_sort"));
-        InternalSortStrategy internalSortStrategy = SortStrategyFactory.create(namespace.get("internal_sort"));
+        InternalSortStrategy internalSortStrategy = InternalSortStrategyFactory.create(namespace.get("internal_sort"));
 
         // Apply the merge sort
         externalSortStrategy.sort(blocks, internalSortStrategy);

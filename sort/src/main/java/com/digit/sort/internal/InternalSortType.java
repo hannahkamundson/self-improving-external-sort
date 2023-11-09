@@ -1,5 +1,5 @@
 package com.digit.sort.internal;
 
-public enum SortStrategyType {
+public enum InternalSortType {
     GENERIC
 }
