@@ -1,9 +1,8 @@
 package com.digit.command;
 
 import com.digit.io.Block;
+import com.digit.io.BlockMath;
 import com.digit.io.FileBlocks;
-import com.digit.io.Reader;
-import com.digit.io.Writer;
 import com.digit.mergesort.ExternalSortStrategy;
 import com.digit.mergesort.ExternalSortStrategyFactory;
 import com.digit.mergesort.ExternalSortType;
@@ -14,7 +13,6 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
 import java.io.File;
-import java.nio.file.Path;
 
 /**
  * Run merge-sort on a folder of files where each file can fully fit into memory
@@ -51,7 +49,7 @@ public class MergeSortCommand implements Command {
         File outputFile = new File(namespace.getString("output_file"));
 
         // Convert the file into blocks of chunks
-        Block[] blocks = FileBlocks.create(dataDirectory);
+        Block[] blocks = FileBlocks.create(dataDirectory, BlockMath.LINES_PER_CHUNK);
 
         // Get the reader, writer, external sort, and internal sort
         ExternalSortStrategy externalSortStrategy = ExternalSortStrategyFactory.create(namespace.get("external_sort"));

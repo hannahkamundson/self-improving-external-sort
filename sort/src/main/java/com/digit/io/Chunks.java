@@ -1,5 +1,8 @@
 package com.digit.io;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class Chunks {
     private final long[] offsets;
 
@@ -14,10 +17,13 @@ public class Chunks {
     }
 
     public boolean hasNext() {
-        return chunkIndex < offsets.length;
+        return chunkIndex < offsets.length - 1;
     }
 
-    public long minByte() {
+    /**
+     * What line should we start at for this chunk?
+     */
+    public long minLine() {
         if (!hasNext()) {
             throw new IndexOutOfBoundsException();
         }
@@ -25,16 +31,15 @@ public class Chunks {
         return offsets[chunkIndex];
     }
 
-    public long maxByte() {
+    /**
+     * How many lines should we read? (including the original line)
+     */
+    public long numLines() {
         if (!hasNext()) {
             throw new IndexOutOfBoundsException();
         }
 
-        if (chunkIndex == (offsets.length - 1)) {
-            return Long.MAX_VALUE;
-        }
-
-        return offsets[chunkIndex + 1] - 1;
+        return offsets[chunkIndex + 1] - offsets[chunkIndex] ;
     }
 
     public void increment() {

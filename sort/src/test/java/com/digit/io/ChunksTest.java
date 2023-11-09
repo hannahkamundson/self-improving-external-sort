@@ -7,26 +7,16 @@ public class ChunksTest {
     @Test
     void testMinMax_HappyPath_firstElement() {
         Chunks chunk = makeChunk();
-        assertEquals(0, chunk.minByte());
-        assertEquals(3, chunk.maxByte());
+        assertEquals(0, chunk.minLine());
+        assertEquals(4, chunk.numLines());
     }
 
     @Test
     void testMinMax_HappyPath_middleElement() {
         Chunks chunk = makeChunk();
         chunk.increment();
-        assertEquals(4, chunk.minByte());
-        assertEquals(4, chunk.maxByte());
-    }
-
-    @Test
-    void testMinMax_HappyPath_lastElement() {
-        Chunks chunk = makeChunk();
-        chunk.increment();
-        chunk.increment();
-        chunk.increment();
-        assertEquals(8, chunk.minByte());
-        assertEquals(Long.MAX_VALUE, chunk.maxByte());
+        assertEquals(4, chunk.minLine());
+        assertEquals(1, chunk.numLines());
     }
 
     private static Chunks makeChunk() {

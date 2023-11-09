@@ -1,6 +1,7 @@
 package com.digit.io;
 
 import com.digit.sort.SortStrategy;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -11,9 +12,9 @@ import java.util.List;
 /**
  * A block is a section of a file. It is made up of chunks. If we can fit M chunks into memory, a block holds M-1
  * chunks.
- *
  * This assumes each block is a separate file
  */
+@EqualsAndHashCode
 public class Block {
     /**
      * The file that holds the data
@@ -26,6 +27,7 @@ public class Block {
     @Getter
     private int[] cache;
 
+    @Getter
     private int cacheIndex = 0;
 
     private Block(Path filePath, Chunks chunks) {
@@ -63,7 +65,8 @@ public class Block {
         cacheIndex = 0;
     }
 
-    private boolean cacheHasNext() {
+    // Visible for testing
+    boolean cacheHasNext() {
         return cacheIndex < cache.length;
     }
 
@@ -78,7 +81,7 @@ public class Block {
         }
 
         // Read the data into cache
-        cache = Reader.read(filePath, chunks.minByte(), chunks.maxByte());
+        cache = Reader.read(filePath, chunks.minLine(), chunks.numLines());
         cacheIndex = 0;
         chunks.increment();
     }
@@ -87,13 +90,12 @@ public class Block {
      * Peek at the next value
      */
     public int peek() {
-        // If we can't do it, return the max value since we are sorting smallest to l argest
-        if (!hasNext()) {
-            return Integer.MAX_VALUE;
-
         // If the cache needs to be loaded, load it
-        } else if (!cacheHasNext()) {
+        if (!cacheHasNext() && hasNext())
             loadNextChunk();
+        // If we can't do it, return the max value since we are sorting smallest to largest
+        else if (!hasNext()) {
+            return Integer.MAX_VALUE;
         }
 
         // Grab from the cache
@@ -119,12 +121,14 @@ public class Block {
          * Add a chunk with the specified offset
          * @param offset Where should we start in the file?
          */
-        public void addChunk(long offset) {
+        public Builder addChunk(long offset) {
             chunksToBe.add(offset);
+            return this;
         }
 
-        public void filePath(Path filePath) {
+        public Builder filePath(Path filePath) {
             this.filePath = filePath;
+            return this;
         }
 
         public Block build() {

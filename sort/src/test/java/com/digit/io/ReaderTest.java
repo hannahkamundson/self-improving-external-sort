@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class ReaderTest {
-    private final static Path testPath = new File("src/test/resources/com/digit/io/numbers.txt").toPath();
+    private final static Path testPath = new File("src/test/resources/com/digit/io/reader/numbers.txt").toPath();
 
     @Test
     void testReadAll_happyPath() {

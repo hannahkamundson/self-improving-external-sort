@@ -1,10 +1,9 @@
 package com.digit.io;
 
-import com.digit.util.ByteArithmetic;
-
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
@@ -16,17 +15,23 @@ public class Writer {
      * @param filePath The file path to write the array to
      */
     public static void writeAll(int[] sorted, Path filePath) {
-        try (FileOutputStream out = new FileOutputStream(filePath.toFile());
-             FileChannel channel = out.getChannel()) {
-            ByteBuffer buf = channel.map(FileChannel.MapMode.READ_WRITE, 0, (long) ByteArithmetic.BYTES_PER_INT * sorted.length);
-            for (int i : sorted) {
-                buf.putInt(i);
+        Writer.bufferedWriter(filePath.toFile(), writer -> {
+            for (int i: sorted) {
+                try {
+                    writer.write(String.valueOf(i));
+                    writer.newLine();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
+    /**
+     * Use a buffered writer to write to file
+     * @param outputFile The output file
+     * @param writeFn What you want to write
+     */
     public static void bufferedWriter(File outputFile, Consumer<BufferedWriter> writeFn) {
         try (FileWriter fileWriter = new FileWriter(outputFile);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)
