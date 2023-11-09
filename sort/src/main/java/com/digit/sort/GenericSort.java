@@ -8,8 +8,7 @@ import java.util.Arrays;
 public class GenericSort implements SortStrategy {
 
     @Override
-    public int[] sort(int[] unsorted) {
+    public void sort(int[] unsorted) {
         Arrays.sort(unsorted);
-        return unsorted;
     }
 }

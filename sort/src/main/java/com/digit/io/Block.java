@@ -1,11 +1,11 @@
 package com.digit.io;
 
+import com.digit.sort.SortStrategy;
 import lombok.Getter;
 import lombok.NonNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -14,40 +14,107 @@ import java.util.List;
  *
  * This assumes each block is a separate file
  */
-@Getter
-public class Block implements Iterator<Chunk> {
+public class Block {
     /**
      * The file that holds the data
      */
     @NonNull
     private final Path filePath;
 
-    private final Chunk[] chunks;
+    private final Chunks chunks;
 
-    private int index = 0;
+    @Getter
+    private int[] cache;
 
-    private Block(Path filePath, Chunk[] chunks) {
+    private int cacheIndex = 0;
+
+    private Block(Path filePath, Chunks chunks) {
         this.filePath = filePath;
         this.chunks = chunks;
+    }
+
+    /**
+     * Read all chunks of data into memory
+     */
+    public void readAll() {
+        cache = Reader.readAll(filePath);
+    }
+
+    /**
+     * Sort the data according to the strategy
+     * @param sortStrategy How should we sort data?
+     */
+    public void sort(SortStrategy sortStrategy) {
+        sortStrategy.sort(cache);
+    }
+
+    /**
+     * Write all data to the original file
+     */
+    public void write() {
+        Writer.writeAll(cache, filePath);
+    }
+
+    /**
+     * Remove all data from memory
+     */
+    public void flush() {
+        cache = null;
+        cacheIndex = 0;
+    }
+
+    private boolean cacheHasNext() {
+        return cacheIndex < cache.length;
+    }
+
+    public boolean hasNext() {
+        // It has more data if there is still an element in the cache or another chunk
+        return cacheHasNext() || chunks.hasNext();
+    }
+
+    public void loadNextChunk() {
+        if (!chunks.hasNext()) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        // Read the data into cache
+        cache = Reader.read(filePath, chunks.minByte(), chunks.maxByte());
+        cacheIndex = 0;
+        chunks.increment();
+    }
+
+    /**
+     * Peek at the next value
+     */
+    public int peek() {
+        // If we can't do it, return the max value since we are sorting smallest to l argest
+        if (!hasNext()) {
+            return Integer.MAX_VALUE;
+
+        // If the cache needs to be loaded, load it
+        } else if (!cacheHasNext()) {
+            loadNextChunk();
+        }
+
+        // Grab from the cache
+        return cache[cacheIndex];
+    }
+
+    public int pop() {
+        int value = peek();
+        cacheIndex++;
+
+        return value;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @Override
-    public boolean hasNext() {
-        return index < chunks.length;
-    }
 
-    @Override
-    public Chunk next() {
-        index++;
-        return chunks[index - 1];
-    }
 
     static class Builder {
-        private final List<Chunk> chunksToBe = new ArrayList<Chunk>();
+        private final List<Long> chunksToBe = new ArrayList<>();
         private Path filePath = null;
 
         /**
@@ -55,7 +122,7 @@ public class Block implements Iterator<Chunk> {
          * @param offset Where should we start in the file?
          */
         public void addChunk(long offset) {
-            chunksToBe.add(new Chunk(offset));
+            chunksToBe.add(offset);
         }
 
         public void filePath(Path filePath) {
@@ -67,7 +134,7 @@ public class Block implements Iterator<Chunk> {
                 throw new IllegalArgumentException("You must have at least one chunk per block.");
             }
 
-            return new Block(filePath, chunksToBe.toArray(new Chunk[0]));
+            return new Block(filePath, new Chunks(chunksToBe.stream().mapToLong(v -> v).toArray()));
         }
     }
 }

@@ -14,6 +14,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Run merge-sort on a folder of files where each file can fully fit into memory
@@ -23,6 +24,10 @@ public class MergeSortCommand implements Command {
         parser.addArgument("--folder-path", "-f")
                 .type(String.class)
                 .help("The folder path to the data files")
+                .required(true);
+        parser.addArgument("--output-file", "-o")
+                .type(String.class)
+                .help("The output file")
                 .required(true);
         parser.addArgument("--external-sort", "-es")
                 .type(ExternalSortType.class)
@@ -43,17 +48,17 @@ public class MergeSortCommand implements Command {
             throw new IllegalArgumentException(String.format("Your file path did not exist or was not a directory: %s", dataDirectory.getAbsolutePath()));
         }
 
+        File outputFile = new File(namespace.getString("output_file"));
+
         // Convert the file into blocks of chunks
         Block[] blocks = FileBlocks.create(dataDirectory);
 
         // Get the reader, writer, external sort, and internal sort
-        Reader reader = new Reader();
-        Writer writer = new Writer();
         ExternalSortStrategy externalSortStrategy = ExternalSortStrategyFactory.create(namespace.get("external_sort"));
         SortStrategy sortStrategy = SortStrategyFactory.create(namespace.get("internal_sort"));
 
         // Apply the merge sort
-        externalSortStrategy.sort(blocks, sortStrategy, reader, writer);
-        externalSortStrategy.merge(blocks, reader, writer);
+        externalSortStrategy.sort(blocks, sortStrategy);
+        externalSortStrategy.merge(blocks, outputFile);
     }
 }
