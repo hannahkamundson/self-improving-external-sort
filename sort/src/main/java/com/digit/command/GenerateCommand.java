@@ -2,7 +2,6 @@ package com.digit.command;
 
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Generate data for the benchmark
@@ -24,6 +23,6 @@ public class GenerateCommand implements Command {
     public void run(Namespace namespace) {
         // TODO: Decide how many files and how much data should be written out
         // TODO: Randomly draw numbers and write them out for each file
-        throw new NotImplementedException();
+        throw new RuntimeException("GenerateCommand.run isn't implemented yet");
     }
 }

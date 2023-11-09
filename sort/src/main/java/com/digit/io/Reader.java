@@ -19,7 +19,7 @@ public class Reader {
     public static int[] read(Path filePath, long beginning, long length) {
         try(Stream<String> lines = Files.lines(filePath)) {
             Stream<String> specificLines;
-            if (beginning >= 0 || length >= 0) {
+            if (beginning >= 0 && length >= 0) {
                 specificLines = lines.skip(beginning).limit(length);
             } else {
                 specificLines = lines;

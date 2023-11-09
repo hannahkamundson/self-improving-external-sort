@@ -111,8 +111,6 @@ public class Block {
         return new Builder();
     }
 
-
-
     static class Builder {
         private final List<Long> chunksToBe = new ArrayList<>();
         private Path filePath = null;

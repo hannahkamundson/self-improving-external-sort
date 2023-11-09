@@ -7,6 +7,10 @@ public class Chunks {
 
     public Chunks(long[] offsets) {
         this.offsets = offsets;
+
+        if (offsets[0] != 0) {
+            throw new IllegalArgumentException("The first offset must be 0 in the chunks");
+        }
     }
 
     public boolean hasNext() {
@@ -30,7 +34,7 @@ public class Chunks {
             return Long.MAX_VALUE;
         }
 
-        return offsets[chunkIndex + 1];
+        return offsets[chunkIndex + 1] - 1;
     }
 
     public void increment() {
