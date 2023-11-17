@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class GenericSort implements InternalSortStrategy {
 
     @Override
-    public void sort(int[] unsorted) {
+    public void sort(int sampleNumber, int[] unsorted) {
         Arrays.sort(unsorted);
     }
 }

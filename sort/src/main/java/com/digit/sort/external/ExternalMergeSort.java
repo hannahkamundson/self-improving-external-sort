@@ -14,12 +14,13 @@ public class ExternalMergeSort implements ExternalSortStrategy {
 
     @Override
     public void sort(Block[] blocks, InternalSortStrategy internalSortStrategy) {
-        for (Block block: blocks) {
+        for (int i = 0; i < blocks.length; i++) {
+            Block block = blocks[i];
             // Read all data into memory
             block.readAll();
 
             // Sort the data
-            block.sort(internalSortStrategy);
+            block.sort(i, internalSortStrategy);
 
             // Write the data to disk
             block.write();

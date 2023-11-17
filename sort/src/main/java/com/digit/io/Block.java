@@ -46,8 +46,8 @@ public class Block {
      * Sort the data according to the strategy
      * @param internalSortStrategy How should we sort data?
      */
-    public void sort(InternalSortStrategy internalSortStrategy) {
-        internalSortStrategy.sort(cache);
+    public void sort(int sampleNumber, InternalSortStrategy internalSortStrategy) {
+        internalSortStrategy.sort(sampleNumber, cache);
     }
 
     /**
