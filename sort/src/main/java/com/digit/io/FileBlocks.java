@@ -17,6 +17,7 @@ public class FileBlocks {
 
         try (Stream<Path> paths = Files.walk(dataFolder.toPath())) {
             return paths.filter(path -> !path.toFile().isDirectory())
+                    .sorted()
                     .map(path -> {
                         Block.Builder builder = Block.builder();
                         builder.filePath(path);
