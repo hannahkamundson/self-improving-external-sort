@@ -19,33 +19,30 @@ public class SelfImprovingSort implements InternalSortStrategy {
      */
     private InternalSortStrategy sortStrategy;
 
-    private int sample = 0;
-
     public SelfImprovingSort() {
-        // Start off with a generic sort until we have enough info to build the ailon sort
+        // Start off with a generic sort until we have enough info to build the Ailon sort
         sortStrategy = new GenericSort();
     }
 
-    
-
     @Override
     public void sort(int sampleNumber, int[] unsorted) {
-        if (sample < TRAINING_MAX) {
-            // Train the data
+        if (sampleNumber < TRAINING_MAX) {
+            // Call whatever default sort strategy (generic sort in this case)
+            sortStrategy.sort(sampleNumber, unsorted);
+            // Train the data based on the data now that it is sorted
             trainingStage.train(sampleNumber, unsorted);
-            // Do a generic sort
-            sortStrategy.sort(sample, unsorted);
         } else {
-            // If we have moved out of the training stage,
-            if (sample == TRAINING_MAX) {
-                // Get the sort type based on the training info
-                sortStrategy = trainingStage.createSort();
-                trainingStage = null;
-            }
-
-            sortStrategy.sort(sample, unsorted);
+            sortStrategy.sort(sampleNumber, unsorted);
         }
+    }
 
-        sample++;
+    @Override
+    public void learn(int sampleNumber) {
+        // If we have moved out of the training stage,
+        if (sampleNumber == (TRAINING_MAX - 1)) {
+            // Get the sort type based on the training info
+            sortStrategy = trainingStage.createSort();
+            trainingStage = null;
+        }
     }
 }

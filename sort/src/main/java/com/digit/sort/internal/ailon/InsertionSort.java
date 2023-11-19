@@ -1,17 +1,24 @@
 package com.digit.sort.internal.ailon;
 
-public class InsertionSort {
-    public static void sort(int[] array) {
-        int n = array.length;
+import com.digit.sort.internal.InternalSortStrategy;
+
+public class InsertionSort implements InternalSortStrategy {
+    @Override
+    public void sort(int sampleNumber, int[] unsorted) {
+        sort(unsorted);
+    }
+
+    public void sort(int[] unsorted) {
+        int n = unsorted.length;
         for (int i = 1; i < n; ++i) {
-            int key = array[i];
+            int key = unsorted[i];
             int j = i - 1;
 
-            while (j >= 0 && array[j] > key) {
-                array[j + 1] = array[j];
+            while (j >= 0 && unsorted[j] > key) {
+                unsorted[j + 1] = unsorted[j];
                 j = j - 1;
             }
-            array[j + 1] = key;
+            unsorted[j + 1] = key;
         }
     }
 }

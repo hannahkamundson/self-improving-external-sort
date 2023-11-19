@@ -10,7 +10,7 @@ public class GenericSortTest {
     void testSort() {
         int[] input = new int[] {4, 2, 6, 1, 10, 22, 3, 1};
         GenericSort sort = new GenericSort();
-        sort.sort(input);
+        sort.sort(1, input);
         assertArrayEquals(new int[] {1, 1, 2, 3, 4, 6, 10, 22}, input);
     }
 }
