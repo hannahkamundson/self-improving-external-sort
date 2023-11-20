@@ -1,4 +1,4 @@
-package com.digit.sort.internal.ailon;
+package com.digit.sort.internal;
 
 import com.digit.sort.internal.InternalSortStrategy;
 

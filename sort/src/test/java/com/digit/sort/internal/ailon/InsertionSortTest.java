@@ -1,6 +1,6 @@
 package com.digit.sort.internal.ailon;
 
-import com.digit.sort.internal.GenericSort;
+import com.digit.sort.internal.InsertionSort;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
