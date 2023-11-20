@@ -1,5 +1,6 @@
 package com.digit.sort.internal.ailon;
 
+import com.digit.command.Config;
 import com.digit.sort.internal.InternalSortStrategy;
 
 /**
@@ -7,13 +8,17 @@ import com.digit.sort.internal.InternalSortStrategy;
  * correct buckets (2) then you find the trees for each line of the algorithm
  */
 public class TrainingStage {
-    private final int TREE_SAMPLES_MAX = BucketTraining.BUCKET_SAMPLES + TreeTraining.TREE_SAMPLES;
+    /**
+     * We do the bucket training first and then the tree training. What is the sample number of the final tree
+     * training?
+     */
+    private final int TREE_SAMPLES_MAX = Config.BUCKET_SAMPLES + Config.TREE_SAMPLES;
 
     private BucketTraining bucketTraining;
     private TreeTraining treeTraining;
 
     public TrainingStage() {
-        bucketTraining = new BucketTraining();
+        bucketTraining = new BucketTraining(Config.MAX_NUMBER - Config.MIN_NUMBER + 1, Config.BUCKET_SAMPLES, Config.NUMBER_LINES);
     }
 
     public int getTrainingMax() {
@@ -21,7 +26,7 @@ public class TrainingStage {
     }
 
     public void train(int sampleNumber, int[] sorted) {
-        if (sampleNumber < BucketTraining.BUCKET_SAMPLES) {
+        if (sampleNumber < Config.BUCKET_SAMPLES) {
             bucketTraining.train(sorted);
         } else if (sampleNumber < TREE_SAMPLES_MAX) {
             treeTraining.train(sorted);
@@ -36,9 +41,10 @@ public class TrainingStage {
      */
     public void learn(int sampleNumber) {
         // If this is our last bucket training
-        if (sampleNumber == (BucketTraining.BUCKET_SAMPLES - 1)) {
+        if (sampleNumber == (Config.BUCKET_SAMPLES - 1)) {
             // Set the next training strategy (tree training) based on the bucket results
-            treeTraining = new TreeTraining(bucketTraining.bucketResult());
+            treeTraining = new TreeTraining(bucketTraining.bucketSeparatorResult());
+            // Null this out so garbage collection deals with whatever is in there
             bucketTraining = null;
         }
     }

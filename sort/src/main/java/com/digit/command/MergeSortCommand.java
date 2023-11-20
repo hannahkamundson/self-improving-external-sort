@@ -13,6 +13,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
 import java.io.File;
+import java.util.Optional;
 
 /**
  * Run merge-sort on a folder of files where each file can fully fit into memory
@@ -35,10 +36,25 @@ public class MergeSortCommand implements Command {
                 .type(InternalSortType.class)
                 .help("The internal sort strategy you want to use")
                 .required(true);
+        parser.addArgument("--max-number", "-mx")
+                .type(Integer.class)
+                .help("The maximum number allowed in the sample")
+                .required(true);
+        parser.addArgument("--bucket-samples", "-bs")
+                .type(Integer.class)
+                .help("How many samples should be used for bucket training?")
+                .required(false);
+        parser.addArgument("--tree-samples", "-ts")
+                .type(Integer.class)
+                .help("How many samples should be used for tree training?")
+                .required(false);
     }
 
     @Override
     public void run(Namespace namespace) {
+        // Set some of the configs
+        Config.MAX_NUMBER = namespace.getInt("max_number");
+
         // Get the file and make sure it exists/isn't a directory
         File dataDirectory = new File(namespace.getString("folder_path"));
 
@@ -53,7 +69,18 @@ public class MergeSortCommand implements Command {
 
         // Get the reader, writer, external sort, and internal sort
         ExternalSortStrategy externalSortStrategy = ExternalSortStrategyFactory.create(namespace.get("external_sort"));
-        InternalSortStrategy internalSortStrategy = InternalSortStrategyFactory.create(namespace.get("internal_sort"));
+
+        InternalSortType internalSortType = namespace.get("internal_sort");
+
+        // if internalSortType, make sure the training sample numbers are set
+        if (internalSortType == InternalSortType.SELF_IMPROVING) {
+            Config.BUCKET_SAMPLES = Optional.of(namespace.getInt("bucket_samples"))
+                    .orElseThrow(() -> new IllegalArgumentException("You must specify bucket-samples if you are doing the self improving sort"));
+            Config.TREE_SAMPLES = Optional.of(namespace.getInt("tree_samples"))
+                    .orElseThrow(() -> new IllegalArgumentException("You must specify tree-samples if you are doing the self improving sort"));
+        }
+
+        InternalSortStrategy internalSortStrategy = InternalSortStrategyFactory.create(internalSortType);
 
         // Apply the merge sort
         externalSortStrategy.sort(blocks, internalSortStrategy);

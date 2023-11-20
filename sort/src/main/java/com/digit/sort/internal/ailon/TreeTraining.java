@@ -1,7 +1,6 @@
 package com.digit.sort.internal.ailon;
 
 public class TreeTraining {
-    final static int TREE_SAMPLES = 0;
     private final int[] buckets;
 
     public TreeTraining(int[] buckets) {
