@@ -7,8 +7,10 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
+import java.io.IOException;
+
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ArgumentParser parser = ArgumentParsers.newFor("external-sort").build().defaultHelp(true)
                 .description("Self improving external sort benchmark tool");
 
