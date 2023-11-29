@@ -21,6 +21,6 @@ public class ByteArithmetic {
 
     public static int numberOfIntegersThatCanFit(double gb) {
         // Java int is 4 bytes
-        return gbToByte(gb) / 4;
+        return gbToByte(gb) / 100/ 4;
     }
 }

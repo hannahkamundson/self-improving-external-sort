@@ -41,5 +41,5 @@ public class Config {
     /**
      * How many lines does eacah chunk have?
      */
-    public static int LINES_PER_CHUNK = ByteArithmetic.gbToByte(1.0);
+    public static int LINES_PER_CHUNK = -3;
 }
