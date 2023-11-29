@@ -1,7 +1,6 @@
 package com.digit.command;
 
 import com.digit.io.Block;
-import com.digit.io.BlockMath;
 import com.digit.io.FileBlocks;
 import com.digit.sort.external.ExternalSortStrategy;
 import com.digit.sort.external.ExternalSortStrategyFactory;
@@ -14,6 +13,8 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 /**
@@ -56,7 +57,7 @@ public class MergeSortCommand implements Command {
     }
 
     @Override
-    public void run(Namespace namespace) {
+    public void run(Namespace namespace) throws IOException {
         // Set some of the configs
         Config.MAX_NUMBER = namespace.getInt("max_number");
         Config.NUMBER_LINES = ByteArithmetic.numberOfIntegersThatCanFit(namespace.getInt("size_of_file_gb"));
@@ -70,8 +71,15 @@ public class MergeSortCommand implements Command {
 
         File outputFile = new File(namespace.getString("output_file"));
 
+        int numberOfFiles = (int) Files.walk(dataDirectory.toPath())
+                .filter(path -> !path.toFile().isDirectory())
+                .count();
+
+        // We expect an entire file to fit into memory so split by number of files to get chunk size
+        Config.LINES_PER_CHUNK = Config.NUMBER_LINES / numberOfFiles;
+
         // Convert the file into blocks of chunks
-        Block[] blocks = FileBlocks.create(dataDirectory, BlockMath.LINES_PER_CHUNK);
+        Block[] blocks = FileBlocks.create(dataDirectory, Config.LINES_PER_CHUNK);
 
         // Get the reader, writer, external sort, and internal sort
         ExternalSortStrategy externalSortStrategy = ExternalSortStrategyFactory.create(namespace.get("external_sort"));

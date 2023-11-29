@@ -15,8 +15,8 @@ public class FileBlocks {
      */
     public static Block[] create(File dataFolder, int linesPerChunk) {
 
-        try (Stream<Path> paths = Files.walk(dataFolder.toPath())) {
-            return paths.filter(path -> !path.toFile().isDirectory())
+        try (Stream<Path> paths = Files.walk(dataFolder.toPath()).filter(path -> !path.toFile().isDirectory())) {
+            return paths
                     .sorted()
                     .map(path -> {
                         Block.Builder builder = Block.builder();
