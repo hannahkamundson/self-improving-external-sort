@@ -15,10 +15,12 @@ public class BucketTraining {
         this.valuesSeen = new AtomicLongArray(numberPossibleValues);
         this.numberSamples = numberSamples;
         // We want 1 less than the number of lines because these are the separators between buckets
-        this.numberBucketSeparators = numberBuckets - 1;
+        // However, we're adding Integer.MAX for the last one because we want to know the probability it is after the
+        // final line
+        this.numberBucketSeparators = numberBuckets;
     }
 
-    public void train(int[] sortedData) {
+    public void trainSorted(int[] sortedData) {
         // In parallel
         Arrays.stream(sortedData).parallel()
                 .forEach(valuesSeen::incrementAndGet);
@@ -34,12 +36,14 @@ public class BucketTraining {
         for (int i = 0; i < valuesSeen.length(); i++) {
             leftToAdd += valuesSeen.get(i);
 
-            while (resultsIndex < results.length && leftToAdd >= numberSamples) {
+            while (resultsIndex < (results.length - 1) && leftToAdd >= numberSamples) {
                 results[resultsIndex] = i;
                 leftToAdd = leftToAdd - numberSamples;
                 resultsIndex++;
             }
         }
+
+        results[resultsIndex] = Integer.MAX_VALUE;
         return results;
     }
 }

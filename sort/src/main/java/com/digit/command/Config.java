@@ -21,9 +21,10 @@ public class Config {
      */
     public static int TREE_SAMPLES = 0;
 
-    // TODO: Calculate this based on MB
     /**
      * How many lines are in each file?
      */
-    public static int NUMBER_LINES = 5;
+    public static int NUMBER_LINES = -3;
+
+    public static int SEED = 1234;
 }

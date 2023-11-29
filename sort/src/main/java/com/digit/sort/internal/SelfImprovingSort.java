@@ -26,11 +26,16 @@ public class SelfImprovingSort implements InternalSortStrategy {
 
     @Override
     public void sort(int sampleNumber, int[] unsorted) {
+        // If we are in the training phase
         if (sampleNumber < TRAINING_MAX) {
+            // Train on the unsorted data
+            trainingStage.trainOnUnsortedData(sampleNumber, unsorted);
+
             // Call whatever default sort strategy (generic sort in this case)
             sortStrategy.sort(sampleNumber, unsorted);
-            // Train the data based on the data now that it is sorted
-            trainingStage.train(sampleNumber, unsorted);
+
+            // Train on the sorted data
+            trainingStage.trainOnSortedData(sampleNumber, unsorted);
         } else {
             sortStrategy.sort(sampleNumber, unsorted);
         }

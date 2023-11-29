@@ -9,6 +9,7 @@ import com.digit.sort.external.ExternalSortType;
 import com.digit.sort.internal.InternalSortStrategy;
 import com.digit.sort.internal.InternalSortStrategyFactory;
 import com.digit.sort.internal.InternalSortType;
+import com.digit.util.ByteArithmetic;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 
@@ -48,12 +49,17 @@ public class MergeSortCommand implements Command {
                 .type(Integer.class)
                 .help("How many samples should be used for tree training?")
                 .required(false);
+        parser.addArgument("--size-of-file-gb", "-gb")
+                .type(Integer.class)
+                .help("How many GBs should each file/block be?")
+                .required(true);
     }
 
     @Override
     public void run(Namespace namespace) {
         // Set some of the configs
         Config.MAX_NUMBER = namespace.getInt("max_number");
+        Config.NUMBER_LINES = ByteArithmetic.numberOfIntegersThatCanFit(namespace.getInt("size_of_file_gb"));
 
         // Get the file and make sure it exists/isn't a directory
         File dataDirectory = new File(namespace.getString("folder_path"));

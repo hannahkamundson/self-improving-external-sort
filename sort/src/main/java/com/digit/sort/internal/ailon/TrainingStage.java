@@ -25,11 +25,21 @@ public class TrainingStage {
         return TREE_SAMPLES_MAX;
     }
 
-    public void train(int sampleNumber, int[] sorted) {
+    public void trainOnUnsortedData(int sampleNumber, int[] sorted) {
         if (sampleNumber < Config.BUCKET_SAMPLES) {
-            bucketTraining.train(sorted);
+            // This should be done on sorted data
         } else if (sampleNumber < TREE_SAMPLES_MAX) {
-            treeTraining.train(sorted);
+            treeTraining.trainUnsorted(sorted);
+        } else {
+            throw new IndexOutOfBoundsException(String.format("The sample number shouldn't be trained: %s", sampleNumber));
+        }
+    }
+
+    public void trainOnSortedData(int sampleNumber, int[] sorted) {
+        if (sampleNumber < Config.BUCKET_SAMPLES) {
+            bucketTraining.trainSorted(sorted);
+        } else if (sampleNumber < TREE_SAMPLES_MAX) {
+            // this should be done on unsorted data
         } else {
             throw new IndexOutOfBoundsException(String.format("The sample number shouldn't be trained: %s", sampleNumber));
         }
@@ -50,6 +60,8 @@ public class TrainingStage {
     }
 
     public InternalSortStrategy createSort() {
-        return new AilonSort();
+        InternalSortStrategy sortStrategy = new AilonSort(treeTraining.treeResults());
+        treeTraining = null;
+        return sortStrategy;
     }
 }
