@@ -30,8 +30,9 @@ public class BucketTraining {
      * Get the learned separators between buckets.
      */
     public int[] bucketSeparatorResult() {
-        int[] results = new int[numberBucketSeparators];
-        int resultsIndex = 0;
+        int[] results = new int[numberBucketSeparators + 1];
+        int resultsIndex = 1;
+        results[0] = Integer.MIN_VALUE;
         long leftToAdd = 0;
         for (int i = 0; i < valuesSeen.length(); i++) {
             leftToAdd += valuesSeen.get(i);

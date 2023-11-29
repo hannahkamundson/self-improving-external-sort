@@ -26,5 +26,13 @@ public class Config {
      */
     public static int NUMBER_LINES = -3;
 
+    /**
+     * What random seed should we use?
+     */
     public static int SEED = 1234;
+
+    /**
+     * Can the tree retrain if we find new values after the training stage?
+     */
+    public static boolean ALLOW_TREE_RETRAIN = false;
 }

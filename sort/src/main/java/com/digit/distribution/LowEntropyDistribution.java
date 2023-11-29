@@ -31,7 +31,7 @@ public class LowEntropyDistribution implements Distribution {
                 highs[i] = b;
             }
 
-            probabilities[i] = generator.nextDouble(1.0);
+            probabilities[i] = generator.nextDouble();
         }
     }
 
@@ -51,7 +51,7 @@ public class LowEntropyDistribution implements Distribution {
         Preconditions.checkArgument(numberOfLines == lows.length,
                 "You need to specify the number of lines in the config");
         for (int i = 0; i < numberOfLines; i++) {
-            double probability = generator.nextDouble(1.0);
+            double probability = generator.nextDouble();
 
             if (probability < probabilities[i]) {
                 writer.write(lows[i]);

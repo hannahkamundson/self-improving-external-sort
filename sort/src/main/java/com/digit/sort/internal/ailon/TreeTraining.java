@@ -1,7 +1,10 @@
 package com.digit.sort.internal.ailon;
 
 import com.digit.command.Config;
-import com.digit.sort.internal.ailon.bst.BinarySearchTree;
+import com.digit.util.Pair;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 import java.util.stream.IntStream;
 
@@ -9,17 +12,25 @@ public class TreeTraining {
     /**
      * The separator value in between all the buckets
      */
+    @VisibleForTesting
+    @Getter(AccessLevel.PACKAGE)
     private final int[] bucketSeparators;
 
     /**
      * countLineFallsBelowJ[i][j] is the number of times line i falls between bucket separator (j-1, j)
      */
+    @VisibleForTesting
+    @Getter(AccessLevel.PACKAGE)
     private final long[][] countLineFallsBelowJ;
 
-    public TreeTraining(int[] bucketSeparators) {
+    public TreeTraining(int[] bucketSeparators, int numberOfLines) {
         this.bucketSeparators = bucketSeparators;
         // We need one per line
-        this.countLineFallsBelowJ = new long[Config.NUMBER_LINES][bucketSeparators.length];
+        this.countLineFallsBelowJ = new long[numberOfLines][bucketSeparators.length];
+    }
+
+    public TreeTraining(int[] bucketSeparators) {
+        this(bucketSeparators, Config.NUMBER_LINES);
     }
 
     public void trainUnsorted(int[] unsortedData) {
@@ -42,9 +53,11 @@ public class TreeTraining {
         });
     }
 
-    public BinarySearchTree[] treeResults() {
-        return IntStream.range(0, countLineFallsBelowJ.length).parallel()
-                .mapToObj(line -> OptimalBinarySearchTree.create(bucketSeparators, countLineFallsBelowJ[line]))
+    public Pair<BinarySearchTree[], BinarySearchTree> treeResults() {
+        BinarySearchTree[] binarySearchTrees = IntStream.range(0, countLineFallsBelowJ.length).parallel()
+                .mapToObj(line -> BinarySearchTree.nonZeroBalanced(bucketSeparators, countLineFallsBelowJ[line]))
                 .toArray(BinarySearchTree[]::new);
+        BinarySearchTree balanced = BinarySearchTree.balanced(bucketSeparators);
+        return new Pair<>(binarySearchTrees, balanced);
     }
 }

@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 /**
  * Generate data for the benchmark
  */
-@Slf4j
 public class GenerateCommand implements Command {
     public static void configureParser(Subparser parser) {
         parser.addArgument("--folder-name", "-f")

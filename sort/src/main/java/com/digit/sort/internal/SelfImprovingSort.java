@@ -10,7 +10,7 @@ public class SelfImprovingSort implements InternalSortStrategy {
     private TrainingStage trainingStage = new TrainingStage();
 
     /**
-     * The max train value can be out here so we can get rid of the training object later on
+     * The max train value can be out here, so we can get rid of the training object later on
      */
     private final int TRAINING_MAX = trainingStage.getTrainingMax();
 

@@ -5,10 +5,10 @@ import com.digit.sort.internal.InternalSortStrategy;
 public class InsertionSort implements InternalSortStrategy {
     @Override
     public void sort(int sampleNumber, int[] unsorted) {
-        sort(unsorted);
+        InsertionSort.sort(unsorted);
     }
 
-    public void sort(int[] unsorted) {
+    public static void sort(int[] unsorted) {
         int n = unsorted.length;
         for (int i = 1; i < n; ++i) {
             int key = unsorted[i];
