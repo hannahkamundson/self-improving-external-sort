@@ -51,7 +51,9 @@ public class ExternalMergeSortTest {
 
         // Run the command
         ExternalMergeSort mergeSort = new ExternalMergeSort();
-        mergeSort.sort(blocks, Arrays::sort);
+        InternalSortStrategy testSortStrategy = (sampleNumber, unsorted) -> Arrays.sort(unsorted);
+
+        mergeSort.sort(blocks, testSortStrategy);
 
         // Ensure it was sorted and acme out correctly
         assertThat(block1File.toFile())

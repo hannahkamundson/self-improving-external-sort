@@ -14,18 +14,26 @@ public class ExternalMergeSort implements ExternalSortStrategy {
 
     @Override
     public void sort(Block[] blocks, InternalSortStrategy internalSortStrategy) {
-        for (Block block: blocks) {
+        for (int i = 0; i < blocks.length; i++) {
+            Block block = blocks[i];
             // Read all data into memory
             block.readAll();
 
             // Sort the data
-            block.sort(internalSortStrategy);
+            block.sort(i, internalSortStrategy);
 
             // Write the data to disk
             block.write();
 
             // Remove the data from memory
             block.flush();
+
+            // Allow the internal sort strategy to update its own learning if needed
+            // For example, allow the Ailon sort strategy to configure based on the training
+            // phase. This is so this can occur without the entire block being in memory
+            // Note: This is occurring after we've already flushed the data out of the block so we don't need
+            // to consider as much in memory stuff
+            internalSortStrategy.learn(i);
         }
     }
 
@@ -51,7 +59,7 @@ public class ExternalMergeSort implements ExternalSortStrategy {
 
         // Get the block with the smallest value
         Block smallestValueBlock;
-        while (queue.size() > 0) {
+        while (!queue.isEmpty()) {
             smallestValueBlock = queue.poll();
             int smallestValue = smallestValueBlock.pop();
             writer.write(String.valueOf(smallestValue));
